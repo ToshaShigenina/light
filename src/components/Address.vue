@@ -29,8 +29,8 @@ export default {
       loader: false,
       index: 0,
       coords: {
-        lat: null,
-        lng: null
+        lat: 56.80245,
+        lng: 60.604913
       }
     }
   },
