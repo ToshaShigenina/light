@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import GoogleMapsApiLoader from 'google-maps-api-loader'
+
 export default {
   name: 'AddressMap',
   props: {
@@ -10,23 +12,30 @@ export default {
   },
   data () {
     return {
+      apiKey: 'AIzaSyDit99wUrDjefbHYSg7KMK0GL4iWYeG5Ik',
       mapOptions: {
         zoom: 4,
         center: this.coords
-      }
+      },
+      google: null,
+      map: null
     }
   },
   methods: {
-    initMap () {
-      const map = new google.maps.Map(this.$refs.googleMap, this.mapOptions)
-      const marker = new google.maps.Marker({
-        position: this.coords,
-        map: map
-      })
+    initializeMap () {
+      const mapContainer = this.$refs.googleMap
+      this.map = new this.google.maps.Map(
+        mapContainer, this.mapOptions
+      )
     }
   },
-  mounted () {
-    this.initMap()
+  async mounted () {
+    const googleMapApi = await GoogleMapsApiLoader({
+      apiKey: this.apiKey
+    })
+
+    this.google = googleMapApi
+    this.initializeMap()
   }
 }
 
