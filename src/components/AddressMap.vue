@@ -13,29 +13,45 @@ export default {
   data () {
     return {
       apiKey: 'AIzaSyDit99wUrDjefbHYSg7KMK0GL4iWYeG5Ik',
-      mapOptions: {
-        zoom: 4,
-        center: this.coords
-      },
+      position: this.coords,
       google: null,
-      map: null
+      map: null,
+      marker: null
     }
   },
   methods: {
     initializeMap () {
       const mapContainer = this.$refs.googleMap
       this.map = new this.google.maps.Map(
-        mapContainer, this.mapOptions
+        mapContainer, {
+          zoom: 18,
+          center: this.position
+        }
       )
+      this.marker = new this.google.maps.Marker({
+        position: this.position,
+        map: this.map
+      })
+    },
+    async loadMap () {
+      const googleMapApi = await GoogleMapsApiLoader({
+        apiKey: this.apiKey
+      })
+
+      this.google = googleMapApi
+      this.initializeMap()
+    }
+  },
+  watch: {
+    position: {
+      handler: function (newVal, oldVal) {
+        this.initializeMap()
+      },
+      deep: true
     }
   },
   async mounted () {
-    const googleMapApi = await GoogleMapsApiLoader({
-      apiKey: this.apiKey
-    })
-
-    this.google = googleMapApi
-    this.initializeMap()
+    this.loadMap()
   }
 }
 
